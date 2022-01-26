@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+</head>
+<style>
+    #chat{
+        max-height: 500px;
+        min-height: 500px;
+        background-color: aliceblue;
+        overflow-y: scroll;
+    }
+</style>
+<body>
+    <h1>Chat do Aliszon</h1>
+    <div id="chat">
+
+
+    </div>
+    <input class="form-control" type="text" placeholder="Usuário" name="" id="username">
+    <input class="form-control" type="text" placeholder="Mensagem" name="" id="msg"><br>    
+    <button onclick="send()" class="btn btn-primary btn-lg btn-block">Enviar</button>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+
+<script>
+    var socket = io("http://localhost:8080");
+    
+    socket.on("disconnect", () => {
+        
+    });
+
+    function send(){
+        var msgField = document.getElementById("msg");
+        var usernameField = document.getElementById("username");
+
+        var msg = msgField.value;
+        var username = usernameField.value;
+
+        socket.emit("message", {msg: msg, username: username});
+    }
+
+    socket.on("showMessage", (data) => {
+        var chat = document.getElementById("chat");
+        var p = document.createElement("p");
+        p.innerHTML = `<b>${data.username}</b>: ${data.msg}`;
+
+        chat.append(p);
+    })
+
+</script>
+</html>
